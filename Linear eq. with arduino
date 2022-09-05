@@ -1,0 +1,32 @@
+#include <Arduino.h>
+int PotPin = 26;
+int valuePot = 0;
+int LED = 2;
+float voltage = 0;
+int dim_led = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(LED, OUTPUT);
+  pinMode(PotPin, INPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  //Read the value from POT
+  valuePot = analogRead(PotPin); 
+  Serial.print("Value POT: ");
+  //Print current value from POT
+  Serial.println(valuePot); 
+  //Convert valuePot to Voltage
+  voltage=(3.3/1023)*valuePot; 
+  Serial.print("Value Voltage: ");
+  Serial.println(voltage); //Print voltage
+  //Dimmer for LED
+  //MAP FUNCTION does the same thing as the linear eq.
+  dim_led = map(valuePot, 0, 1023, 0, 255);
+  Serial.print("Value AnalogWrite: ");
+  Serial.println(dim_led); //Print dim_led
+  analogWrite(LED, dim_led);
+
+}
