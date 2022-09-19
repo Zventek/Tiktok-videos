@@ -1,0 +1,80 @@
+#include <Arduino.h>
+// lIGHT DEPENDENT RESISTOR PINS
+int ldr_1 = A0;
+int ldr_2 = A1;
+int ldr_3 = A2;
+int ldr_4 = A3;
+int ldr_5 = A4;
+
+//Read the values from the LDR
+int read_ldr_1 = 0;
+int read_ldr_2 = 0;
+int read_ldr_3 = 0;
+int read_ldr_4 = 0;
+int read_ldr_5 = 0;
+
+// LEDS
+int led_1 = 2;
+int led_2 = 3;
+int led_3 = 4;
+int led_4 = 5;
+int led_5 = 6;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(ldr_1, INPUT);
+  pinMode(ldr_2, INPUT);
+  pinMode(ldr_3, INPUT);
+  pinMode(ldr_4, INPUT);
+  pinMode(ldr_5, INPUT);
+
+  pinMode(led_1, OUTPUT);
+  pinMode(led_2, OUTPUT);
+  pinMode(led_3, OUTPUT);
+  pinMode(led_4, OUTPUT);
+  pinMode(led_5, OUTPUT);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  //LDR range is from 0 to 1023 (like POTENTIOMETER)
+  read_ldr_1 = analogRead(ldr_1);
+  read_ldr_2 = analogRead(ldr_2);
+  read_ldr_3 = analogRead(ldr_3);
+  read_ldr_4 = analogRead(ldr_4);
+  read_ldr_5 = analogRead(ldr_5);
+  //First LDR reading
+  Serial.print("LDR 1: ");
+  Serial.println(read_ldr_1);
+  //Second LDR reading
+  Serial.print("LDR 2: ");
+  Serial.println(read_ldr_2);
+  //Third LDR reading
+  Serial.print("LDR 3: ");
+  Serial.println(read_ldr_3);
+  //Fourth LDR reading
+  Serial.print("LDR 4: ");
+  Serial.println(read_ldr_4);
+  //Fifth LDR reading
+  Serial.print("LDR 5: ");
+  Serial.println(read_ldr_5);  
+
+  //First LED
+  if(read_ldr_1 < 500){digitalWrite(led_1, LOW);}
+  else if (read_ldr_1 > 800){digitalWrite(led_1, HIGH);}
+  //Second LED
+  if(read_ldr_2 < 500){digitalWrite(led_2, LOW);}
+  else if (read_ldr_2 > 800){digitalWrite(led_2, HIGH);}
+  //Third LED
+  if(read_ldr_3 < 500){digitalWrite(led_3, LOW);}
+  else if (read_ldr_3 > 800){digitalWrite(led_3, HIGH);}
+  //Fourth LED
+  if(read_ldr_4 < 500){digitalWrite(led_4, LOW);}
+  else if (read_ldr_4 > 800){digitalWrite(led_4, HIGH);}
+  //Fifth LED
+  if(read_ldr_5 < 500){digitalWrite(led_5, LOW);}
+  else if (read_ldr_5 > 800){digitalWrite(led_5, HIGH);}
+  
+}
