@@ -1,0 +1,49 @@
+#include <Arduino.h>
+// LIGHT DEPENDENT RESISTOR PINS
+int ldr_1 = A0;
+
+//Read the values from the LDR
+int read_ldr_1 = 0;
+
+// Store Vout variable Voltage output
+float Vout = 0;
+
+//Store the value of R2
+float value_R2 = 0;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(ldr_1, INPUT);
+
+}
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  //LDR range is from 0 to 1023 (like POTENTIOMETER)
+  read_ldr_1 = analogRead(ldr_1);
+
+  //First print LDR reading
+  Serial.print("LDR 1: ");
+  Serial.println(read_ldr_1);
+
+  // Get the value of Vout
+  // My USB port was giving 4.7v NOT 5v
+  Vout = ((4.7/1024.0)*read_ldr_1);
+  
+  //Print Vout
+  Serial.print("Vout: ");
+  Serial.println(Vout);
+  
+  // Eq. to know the current value of R2
+  // R1 = 10,000 Ohms
+  // Vin = 4.7v
+  value_R2 = ((Vout*10000)/(4.7 - Vout));
+  // This values will contain errors due to adc resolution, power supply, resistors, etc...
+  // Print R2 value
+  Serial.print("R2: ");
+  Serial.println(value_R2);
+
+}
