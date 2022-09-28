@@ -1,0 +1,52 @@
+#include <Keyboard.h>
+#include <KeyboardLayout.h>
+#include <Keyboard_da_DK.h>
+#include <Keyboard_de_DE.h>
+#include <Keyboard_es_ES.h>
+#include <Keyboard_fr_FR.h>
+#include <Keyboard_it_IT.h>
+#include <Keyboard_sv_SE.h>
+
+
+//Ultrasonic sensor variables
+const int trigger = 3;
+const int echo = 4;
+long duration = 0;
+int distance = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(trigger, OUTPUT);
+  pinMode(echo, INPUT);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  // Code for the ultrasonic sensor
+  digitalWrite(trigger, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigger, HIGH);
+  delayMicroseconds(2);
+  digitalWrite(trigger, LOW);
+
+
+  duration = pulseIn(echo, HIGH);
+  distance = (duration*0.034/2);
+  if(distance < 5){ //Choose your preference distance in (cm)
+    // Keyboard.begin(); //This thing doesn't work
+    // Keyboard.end(); // This thing also doesn't work because the function contains nothing   
+    //Keyboard.println("PARANGARICUTIRIMICUARO "); //Try to spell this word xD
+    //Keyboard.print("DESPARANGARICUTIRIMIZAR");
+    // We use ALT then TAB and then we release TAB first and then ALT at the end to switch between tasks  
+    Keyboard.press(KEY_LEFT_ALT); 
+    Keyboard.press(KEY_TAB);
+    Keyboard.release(KEY_LEFT_ALT);
+    Keyboard.release(KEY_TAB);
+    delay(1000);
+    //Documentation you may need 
+    // https://www.arduino.cc/reference/en/language/functions/usb/keyboard/keyboardmodifiers/
+
+  }
+}
