@@ -1,0 +1,270 @@
+#include <Arduino.h>
+//Turn signal indicator
+
+// Buttons
+int go_left = 2;  
+int val_left = 0;
+int go_right = 3;
+int val_right = 0;
+
+// LEDS
+int quantity_leds = 10;
+// Array starts at 0
+int led[] = {4,5,6,7,8,9,10,11,12,13};
+
+// Switch case 1
+int state_signal = 0;//switch variable
+int state_prev_signal = 0; // for debugging
+unsigned long t_s1 = 0;             //Typically represents the current time of the switch
+unsigned long t_0_s1 = 0;           //The time that we last passed through an interesting state
+unsigned long bounce_delay_s1 = 10; //The delay to list for bouncing
+unsigned long hold_delay_s1 = 2000; //The time required to register a long press (a.k.a. "hold")
+unsigned long delay_to_restart = 2000;
+// Switch case 2
+int state_signal_2 = 0;//switch variable
+int state_prev_signal_2 = 0;// for debugging
+int led_counter = 0;// Increment or decrement between each LED
+unsigned long t_led = 0; //Typically represents the current time of the switch
+unsigned long t_0_led = 0;//The time that we last passed through an interesting state
+unsigned long on_delay_led = 50;//The delay to list for bouncing
+unsigned long off_delay_led = 50;//The time required to register a long press (a.k.a. "hold")
+
+// Switch case 3
+int state_signal_3 = 0;//switch variable
+int state_prev_signal_3 = 0;// for debugging
+int led_counter_2 = 4;// Increment or decrement between each LED
+unsigned long t_led2 = 0;//Typically represents the current time of the switch
+unsigned long t_0_led2 = 0;//The time that we last passed through an interesting state
+unsigned long on_delay_led2 = 50;//The delay to list for bouncing
+unsigned long off_delay_led2 = 50;//The time required to register a long press (a.k.a. "hold")
+
+// Switch case 4
+int state_signal_4 = 0;//switch variable
+int state_prev_signal_4 = 0;// for debugging
+unsigned long t_s2 = 0;             //Typically represents the current time of the switch
+unsigned long t_0_s2 = 0;           //The time that we last passed through an interesting state
+unsigned long bounce_delay_s2 = 10; //The delay to list for bouncing
+unsigned long hold_delay_s2 = 2000; //The time required to register a long press (a.k.a. "hold")
+unsigned long delay_to_restart_2 = 2000;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(go_left, INPUT_PULLUP);
+  pinMode(go_right, INPUT_PULLUP);
+  for(int i = 0; i<quantity_leds; i+=1){
+    pinMode(led[i], OUTPUT);
+  }
+
+} 
+//Fuction to loop between each LED backwards 
+void SM_SEQ_BACKWARD(){
+state_prev_signal_3 = state_signal_3;
+switch (state_signal_3)
+{
+  case 0:
+    /* Do nothing.  
+    Only the SM_SIGNAL loop can force us 
+    out of this state into state 1 "TURN ON" */
+    break;
+
+  case 1: // TURN ON
+    //led_counter_2 = 4;
+    digitalWrite(led[led_counter_2],HIGH);
+    t_0_led2 = millis();
+    state_signal_3 = 2;
+    break;
+
+  case 2://ON
+    //Wait for time to elapse, then proceed to TURN OFF
+    t_led2 = millis();
+    if (t_led2 - t_0_led2 > on_delay_led2) {state_signal_3 = 3;}
+    break;
+
+  case 3:// TURN OFF
+      digitalWrite(led[led_counter_2],LOW);
+      t_0_led2 = millis();
+      state_signal_3 = 4;
+    break;
+
+  case 4://OFF
+    t_led2 = millis();
+    if (t_led2 - t_0_led2 > off_delay_led2) {
+      led_counter_2-=1;
+      if(led_counter_2 < 0){led_counter_2 = 4;}
+      state_signal_3 = 1;
+      }
+    break;  
+}
+}
+
+void SM_SEQ_FORWARD(){
+state_prev_signal_2 = state_signal_2;
+switch (state_signal_2)
+{
+case 0:
+   /* Do nothing.  
+  Only the SM_SIGNAL loop can force us 
+  out of this state into state 1 "TURN ON" */
+  break;
+
+case 1: // TURN ON
+  //led_counter;
+  digitalWrite(led[led_counter],HIGH);
+  t_0_led = millis();
+  state_signal_2 = 2;
+  break;
+
+case 2: //ON
+  //Wait for time to elapse, then proceed to TURN OFF
+  t_led = millis();
+  if (t_led - t_0_led > on_delay_led) {state_signal_2 = 3;}
+  break;
+
+case 3: //TURN OFF
+    digitalWrite(led[led_counter],LOW);
+    t_0_led = millis();
+    state_signal_2 = 4;
+  break;
+
+case 4: //OFF
+  t_led = millis();
+  if (t_led - t_0_led > off_delay_led) {
+    led_counter++;
+    if(led_counter > 4){led_counter = 0;}
+    state_signal_2 = 1;
+    }
+  break;  
+}
+
+}
+
+//Fuction to loop between each LED forward
+void SM_SIGNAL2(){
+  // I'll put this outside the state machine to avoid repeating code
+  val_right = digitalRead(go_right);
+  state_prev_signal_4 = state_signal_4;
+  switch (state_signal_4)
+  {
+  case 0: // RESET
+    state_signal_4 = 1;
+    break;
+  
+  case 1: // WAIT
+    if(val_right == LOW){state_signal_4 = 2;} 
+    break;
+
+  case 2: //ARMING!
+      //Record the time and proceed to ARMED
+      t_0_s2 = millis();//Start counting
+      state_signal_4 = 3;
+    break;
+
+  case 3:
+    //Check to see if the proper has delay has passed.  If a bounce occures then RESET
+    t_s2 = millis();
+    Serial.println(t_s2 - t_0_s2);
+    if (t_s2 - t_0_s2 > bounce_delay_s2) {state_signal_4 = 4;}
+    if (val_right == HIGH) {state_signal_4 = 0;}
+    
+    break;
+  case 4:
+    //If switch goes HIGH, then TRIGGER. Also check timer for a "Long Pess"
+      t_s2 = millis();
+      if (val_right == HIGH) {state_signal_4 = 5;}
+      if (t_s2 - t_0_s2 > hold_delay_s2) {state_signal_4 = 6;t_0_s2=millis();}
+    break;
+  case 5: // BACKWARD SEQUENCE
+    state_signal_3 = 1;
+    state_signal_4 = 0;
+    break;
+
+  case 6: // TURN OFF everything
+    state_signal_3 = 0;
+    for (int i = 0; i < 5; i++)
+    {
+      digitalWrite(led[i], LOW);
+    }
+    state_signal_2 = 0;
+    //Don't restart after 2 seconds
+    t_s2=millis();
+    if (t_s2 - t_0_s2 > delay_to_restart_2)
+    {
+     state_signal_4 = 0;
+    }
+    
+    break;
+  
+  }
+}
+void SM_SIGNAL(){
+  // I'll put this outside the state machine to avoid repeating code
+  val_left = digitalRead(go_left);
+  state_prev_signal = state_signal;
+  switch (state_signal)
+  {
+  case 0: // RESET
+    state_signal = 1;
+    break;
+  
+  case 1: // WAIT
+    if(val_left == LOW){state_signal = 2;} 
+    break;
+
+  case 2: //ARMING!
+      //Record the time and proceed to ARMED
+      t_0_s1 = millis();//Start counting
+      state_signal = 3;
+    break;
+
+  case 3:
+    //Check to see if the proper has delay has passed.  If a bounce occures then RESET
+    t_s1 = millis();
+    Serial.println(t_s1 - t_0_s1);
+    if (t_s1 - t_0_s1 > bounce_delay_s1) {state_signal = 4;}
+    if (val_left == HIGH) {state_signal = 0;}
+    
+    break;
+  case 4:
+    //If switch goes HIGH, then TRIGGER. Also check timer for a "Long Pess"
+      t_s1 = millis();
+      if (val_left == HIGH) {state_signal = 5;}
+      if (t_s1 - t_0_s1 > hold_delay_s1) {state_signal = 6;t_0_s1=millis();}
+    break;
+  case 5: // FORWARD SEQUENCE
+    state_signal_2 = 1;
+    state_signal = 0;
+    break;
+
+  case 6: // TURN OFF everything
+    state_signal_3 = 0;
+    for (int i = 0; i < 5; i++)
+    {
+      digitalWrite(led[i], LOW);
+    }
+    state_signal_2 = 0;
+    //Don't restart after 2 seconds
+    t_s1=millis();
+    if (t_s1 - t_0_s1 > delay_to_restart)
+    {
+     state_signal = 0;
+    }
+    
+    break;
+  
+  }
+}
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+SM_SEQ_BACKWARD();
+SM_SEQ_FORWARD();
+SM_SIGNAL();
+SM_SIGNAL2();
+// For debugging
+// if((state_prev_signal_4 != state_signal_4) | (state_prev_signal_3 != state_signal_3)) {
+//       Serial.print("Switch State: "); Serial.print(state_signal_4);
+//       Serial.print(" | LED State: "); Serial.println(state_signal_3);
+// }
+}
