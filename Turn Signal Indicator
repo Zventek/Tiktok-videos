@@ -21,30 +21,30 @@ unsigned long bounce_delay_s1 = 10; //The delay to list for bouncing
 unsigned long hold_delay_s1 = 2000; //The time required to register a long press (a.k.a. "hold")
 unsigned long delay_to_restart = 2000;
 // Switch case 2
-int state_signal_2 = 0;//switch variable
-int state_prev_signal_2 = 0;// for debugging
-int led_counter = 0;// Increment or decrement between each LED
-unsigned long t_led = 0; //Typically represents the current time of the switch
-unsigned long t_0_led = 0;//The time that we last passed through an interesting state
-unsigned long on_delay_led = 50;//The delay to list for bouncing
-unsigned long off_delay_led = 50;//The time required to register a long press (a.k.a. "hold")
+int state_signal_2 = 0; 
+int state_prev_signal_2 = 0; 
+int led_counter = 0; // Increment or decrement between each LED
+unsigned long t_led = 0; 
+unsigned long t_0_led = 0;
+unsigned long on_delay_led = 50;
+unsigned long off_delay_led = 50;
 
 // Switch case 3
-int state_signal_3 = 0;//switch variable
-int state_prev_signal_3 = 0;// for debugging
-int led_counter_2 = 4;// Increment or decrement between each LED
-unsigned long t_led2 = 0;//Typically represents the current time of the switch
-unsigned long t_0_led2 = 0;//The time that we last passed through an interesting state
-unsigned long on_delay_led2 = 50;//The delay to list for bouncing
-unsigned long off_delay_led2 = 50;//The time required to register a long press (a.k.a. "hold")
+int state_signal_3 = 0;
+int state_prev_signal_3 = 0;
+int led_counter_2 = 4; 
+unsigned long t_led2 = 0;
+unsigned long t_0_led2 = 0;
+unsigned long on_delay_led2 = 50;
+unsigned long off_delay_led2 = 50;
 
 // Switch case 4
-int state_signal_4 = 0;//switch variable
-int state_prev_signal_4 = 0;// for debugging
-unsigned long t_s2 = 0;             //Typically represents the current time of the switch
-unsigned long t_0_s2 = 0;           //The time that we last passed through an interesting state
-unsigned long bounce_delay_s2 = 10; //The delay to list for bouncing
-unsigned long hold_delay_s2 = 2000; //The time required to register a long press (a.k.a. "hold")
+int state_signal_4 = 0;
+int state_prev_signal_4 = 0;
+unsigned long t_s2 = 0;             
+unsigned long t_0_s2 = 0;           
+unsigned long bounce_delay_s2 = 10; 
+unsigned long hold_delay_s2 = 2000; 
 unsigned long delay_to_restart_2 = 2000;
 
 void setup() {
