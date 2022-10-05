@@ -186,7 +186,10 @@ void SM_SIGNAL2(){
       digitalWrite(led[i], LOW);
     }
     state_signal_2 = 0;
-    //Don't restart after 2 seconds
+    /*This is because after 2 seconds when you pressed the button
+    and you want everything to turn off the program
+    will automatically restart making you fall into the loop again
+    so we wait 2 seconds before pressing the button again*/
     t_s2=millis();
     if (t_s2 - t_0_s2 > delay_to_restart_2)
     {
