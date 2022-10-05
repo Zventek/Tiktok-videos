@@ -69,7 +69,6 @@ switch (state_signal_3)
     break;
 
   case 1: // TURN ON
-    //led_counter_2 = 4;
     digitalWrite(led[led_counter_2],HIGH);
     t_0_led2 = millis();
     state_signal_3 = 2;
@@ -109,7 +108,6 @@ case 0:
   break;
 
 case 1: // TURN ON
-  //led_counter;
   digitalWrite(led[led_counter],HIGH);
   t_0_led = millis();
   state_signal_2 = 2;
