@@ -1,0 +1,146 @@
+#include <Arduino.h>
+
+
+// Buttons
+int b1 = 3;  
+int b2 = 2;
+int b3 = 5;
+int b4 = 6;
+int b5 = 7;
+int b6 = 8;
+int b7 = 9;
+int b8 = 10;
+
+// Buzzer
+int buz = 4;
+
+// tones
+int tone1 = 196;
+int tone1play = 0;
+
+int tone2 = 784;
+int tone2play = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+pinMode(b1, INPUT_PULLUP);
+pinMode(b2, INPUT_PULLUP);
+pinMode(b3, INPUT_PULLUP);
+pinMode(b4, INPUT_PULLUP);
+pinMode(b5, INPUT_PULLUP);
+pinMode(b6, INPUT_PULLUP);
+pinMode(b7, INPUT_PULLUP);
+pinMode(b8, INPUT_PULLUP);
+pinMode(buz, OUTPUT);
+
+} 
+
+
+void loop(){
+  // put your main code here, to run repeatedly:
+
+ if (digitalRead(b1) == LOW)
+ {
+   tone(buz, 110, 15);
+ }
+ if (digitalRead(b2) == LOW)
+ {
+  tone1play = 1;
+ }
+  if(tone1play == 1){
+    tone(buz, tone1, 15);
+    delay(10);
+    tone1 -= 6;
+    if(tone1 < 41){
+      tone1 = 196;
+      tone1play = 0;
+    }
+  }
+
+ if (digitalRead(b3) == LOW)
+ {
+     tone2play = 1;
+ }
+  if(tone2play == 1){
+    tone(buz, tone2, 15);
+    delay(12);
+    tone2 -= 28;
+    if(tone2 < 262){
+      tone2 = 784;
+      tone2play = 0;
+    }
+  }
+ if(tone2play == 1){
+     tone(buz, tone2, 15);
+     delay(12);
+     tone2 -= 28;
+     if(tone2 < 262){
+       tone2 = 784;
+       tone2play = 0;
+     }
+   }
+ if(digitalRead(b4) == LOW){
+   tone(buz, 147,30);
+   delay(40);
+   tone(buz, 220,30);
+   delay(40);
+   tone(buz, 294,30);
+   delay(40);
+   tone(buz, 349,30);
+   delay(40);
+   tone(buz, 440,30);
+   delay(40);  
+ }
+ if(digitalRead(b5) == LOW){
+   tone(buz, 175,30);
+   delay(40);
+   tone(buz, 262,30);
+   delay(40);
+   tone(buz, 340,30);
+   delay(40);
+   tone(buz, 440,30);
+   delay(40);
+   tone(buz, 523,30);
+   delay(40);  
+ }
+ if(digitalRead(b6) == LOW){
+   tone(buz, 196,30);
+   delay(40);
+   tone(buz, 294,30);
+   delay(40);
+   tone(buz, 392,30);
+   delay(40);
+   tone(buz, 494,30);
+   delay(40);
+   tone(buz, 587,30);
+   delay(40);  
+ }
+ if(digitalRead(b7) == LOW){
+   tone(buz, 220,30);
+   delay(40);
+   tone(buz, 330,30);
+   delay(40);
+   tone(buz, 440,30);
+   delay(40);
+   tone(buz, 523,30);
+   delay(40);
+   tone(buz, 659,30);
+   delay(40);  
+ }
+ if(digitalRead(b8) == LOW){
+   tone(buz, 262,30);
+   delay(40);
+   tone(buz, 392,30);
+   delay(40);
+   tone(buz, 523,30);
+   delay(40);
+   tone(buz, 659,30);
+   delay(40);
+   tone(buz, 784,30);
+   delay(40);  
+ }
+}
+
+// Inspiration for this video 
+// https://www.youtube.com/watch?v=x07FF-A67Nc&t=46s&ab_channel=ChipPhonic
+
