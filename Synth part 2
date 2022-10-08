@@ -1,0 +1,139 @@
+#include <Arduino.h>
+
+
+// Buzzer
+int buz = 4;
+// time
+int tone1 = 196;
+int tone1play = 0;
+
+int tone2 = 784;
+int tone2play = 0;
+// ST TONE
+int switching;
+
+// POT
+int pot_pog = A0;
+int time_serial = 0;
+int pot_delay = 0;
+
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(9600);
+pinMode(pot_pog, INPUT);
+pinMode(buz, OUTPUT);
+
+} 
+
+void SW_TONE(){
+  switch (switching)
+  {
+  case 0:
+    tone(buz, 110, 15);
+    break;
+
+  case 1:
+    tone1play = 1;
+    if(tone1play == 1){
+      tone(buz, tone1, 15);
+      delay(10);
+      tone1 -= 6;
+      if(tone1 < 41){
+        tone1 = 196;
+        tone1play = 0;
+      }
+    }
+    break;
+
+  case 2:
+    tone2play = 1;
+    if(tone2play == 1){
+      tone(buz, tone2, 15);
+      delay(12);
+      tone2 -= 28;
+      if(tone2 < 262){
+        tone2 = 784;
+        tone2play = 0;
+      }
+    }
+  break;
+
+  case 3:
+    tone(buz, 147,30);
+    delay(pot_delay);
+    tone(buz, 220,30);
+    delay(pot_delay);
+    tone(buz, 294,30);
+    delay(pot_delay);
+    tone(buz, 349,30);
+    delay(pot_delay);
+    tone(buz, 440,30);
+    delay(pot_delay);
+    break;
+
+  case 4:
+    tone(buz, 175,30);
+    delay(pot_delay);
+    tone(buz, 262,30);
+    delay(pot_delay);
+    tone(buz, 340,30);
+    delay(pot_delay);
+    tone(buz, 440,30);
+    delay(pot_delay);
+    tone(buz, 523,30);
+    delay(pot_delay);
+    break;
+
+  case 5:
+    tone(buz, 196,30);
+    delay(pot_delay);
+    tone(buz, 294,30);
+    delay(pot_delay);
+    tone(buz, 392,30);
+    delay(pot_delay);
+    tone(buz, 494,30);
+    delay(pot_delay);
+    tone(buz, 587,30);
+    delay(pot_delay);
+    break;
+
+  case 6:
+    tone(buz, 220,30);
+    delay(pot_delay);
+    tone(buz, 330,30);
+    delay(pot_delay);
+    tone(buz, 440,30);
+    delay(pot_delay);
+    tone(buz, 523,30);
+    delay(pot_delay);
+    tone(buz, 659,30);
+    delay(pot_delay);
+    break;
+
+  case 7:
+    tone(buz, 262,30);
+    delay(pot_delay);
+    tone(buz, 392,30);
+    delay(pot_delay);
+    tone(buz, 523,30);
+    delay(pot_delay);
+    tone(buz, 659,30);
+    delay(pot_delay);
+    tone(buz, 784,30);
+    delay(pot_delay);
+    break;
+
+  }
+}
+
+void loop(){
+  // put your main code here, to run repeatedly:
+ time_serial = analogRead(pot_pog);
+ pot_delay = map(time_serial, 0,1023, 0, 500);
+ Serial.println(pot_delay);
+ SW_TONE();
+ switching +=1;
+ if(switching == 7){switching = 3;}
+
+ }
