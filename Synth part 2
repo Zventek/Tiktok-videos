@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+// Increase or decrease the velocity of the signal with a potentiometer
 
 // Buzzer
 int buz = 4;
