@@ -1,0 +1,111 @@
+// ARDUINO CODE
+#include <Arduino.h>
+int led = 2;
+int button = 3;
+int led_2 = 7;
+int led_3 = 4;
+int led_4 = 5;
+int led_5 = 6;
+char letra;
+boolean buttonState = false;
+int readbutton = 0;
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(led, OUTPUT);
+  pinMode(led_2, OUTPUT);
+  pinMode(led_3, OUTPUT);
+  pinMode(led_4, OUTPUT);
+  pinMode(led_5, OUTPUT);
+  pinMode(button, INPUT_PULLUP);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  if(Serial.available()){
+    letra = Serial.read();
+  if(letra == 'H'){
+    digitalWrite(led, HIGH);
+    digitalWrite(led_2, HIGH);
+    digitalWrite(led_3, HIGH);
+    digitalWrite(led_4, HIGH);
+    digitalWrite(led_5, HIGH);
+  }else if(letra == 'L'){
+    digitalWrite(led, LOW);
+    digitalWrite(led_2, LOW);
+    digitalWrite(led_3, LOW);
+    digitalWrite(led_4, LOW);
+    digitalWrite(led_5, LOW);
+  }
+  }
+
+  readbutton = digitalRead(button);
+  if(readbutton == LOW && buttonState == false){
+    Serial.println('H');
+    buttonState = !buttonState;
+  }else if(readbutton == HIGH && buttonState == true){
+    Serial.println('L');
+    buttonState = !buttonState;
+  }
+  delay(100); // I HATE BOUNCING SWITCHES (⋋▂⋌)
+}
+
+***************************************************** PROCESSING CODE ***************************************************************
+import processing.serial.*;
+Serial myPort;
+
+// My color variables
+color CircleColor = color(0);  // white
+color backgroundColor = (255); // BLACK
+color NewColor = color(0,180,0); 
+color ellipseStroke = color(255); // WHITE
+color ellipseFill = color(255); // WHITE
+
+
+void setup(){
+  //printArray(Serial.list()); //a way to know my port
+  myPort = new Serial(this, "COM3", 9600);
+  size(640, 360);
+}
+
+void mousePressed(){
+  float DistancePog = dist(mouseX, mouseY, width/2,height/2);
+  if(DistancePog < 100){ //100 BECAUSE THE DIAMATER IS 200
+    backgroundColor = color(0); // BLACK
+    CircleColor = color(255); // WHITE
+    ellipseStroke = color(0); // BLACK
+    ellipseFill = color(0); // BLACK
+    myPort.write('H');
+ }
+  
+}
+void mouseReleased(){
+  backgroundColor = color(255); // WHITE
+    CircleColor = color(0); // BLACK
+    ellipseStroke = color(255); // WHITE
+    ellipseFill = color(255); // WHITE
+    myPort.write('L');
+}
+
+
+void draw(){
+  background(backgroundColor);
+  fill(CircleColor);
+  circle(width/2,height/2,200);
+  stroke(ellipseStroke);
+  fill(ellipseFill);
+  ellipse(265,175,60,90);
+  ellipse(375,175,60,90);
+  rect(255, 175, 5, 150);
+  rect(265, 180, 5, 60);
+}
+
+
+
+
+
+
+
+
+
