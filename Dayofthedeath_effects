@@ -1,0 +1,167 @@
+
+#include <Arduino.h>
+// EYES
+//#define led_1 3
+#define led_2 5
+#define led_3 6
+#define led_4 9
+#define led_5 10
+#define led_6 11                                                                                                       
+
+int brightness = 0;  // how bright the LED is
+int fadeAmount = 5;  // how many points to fade the LED by
+
+
+// State machine eye
+int eye_state = 0;
+unsigned long time_0 = 0;
+unsigned long current_time = 0;
+unsigned long duration = 30;
+int prev_eye_state = 0;
+
+// Connections to 74HC595 (1)
+ const int latchPin = 12;
+ const int clockPin = 13;
+ const int dataPin = 3;
+ byte sumup = 0;
+ int count_array = 0;// It's just a counter that pass through pogArray
+ int actual_Array[12] = {1,2,4,8,16,32,32,16,8,4,2,1};
+ // State machine mouth
+ int mouth_state = 0;
+ unsigned long time_m_0 = 0;
+ unsigned long current_m_time = 0;
+ unsigned long duration_m = 100;
+ int prev_mouth_state = 0;
+// Connections to 74HC595 (2)
+const int latchPin_2 = 2;
+const int clockPin_2 = 4;
+const int dataPin_2 = 7;
+byte turn_on_tled = 0b10100100;
+
+// State machine shirt
+int shirt_state = 0;
+unsigned long time_s_0 = 0;
+unsigned long current_s_time = 0;
+unsigned long duration_s = 1000;
+int prev_shirt_state = 0;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(led_2, OUTPUT);
+  pinMode(led_3, OUTPUT);
+  pinMode(led_4, OUTPUT);
+  pinMode(led_5, OUTPUT);
+  pinMode(led_5, OUTPUT);
+  pinMode(led_6, OUTPUT);
+  // 74HC595 as outputs
+  pinMode(latchPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(dataPin, OUTPUT);
+  // 74HC595 (2) as outputs
+  pinMode(latchPin_2, OUTPUT);
+  pinMode(clockPin_2, OUTPUT);
+  pinMode(dataPin_2, OUTPUT);
+}
+void eyes(){
+  prev_eye_state = eye_state;
+  switch (eye_state)
+  {
+  case 0: // BRIGHTNESS
+    time_0 = millis();
+    //analogWrite(led_1, brightness);
+    analogWrite(led_2, brightness);
+    analogWrite(led_3, brightness);
+    analogWrite(led_4, brightness);
+    analogWrite(led_5, brightness);
+    analogWrite(led_6, brightness);    
+    eye_state = 1;
+    break;
+  
+  case 1:
+    brightness = brightness + fadeAmount;
+    eye_state = 2;
+    break;
+
+  case 2:
+    current_time = millis();
+    if(current_time - time_0 > duration){
+      eye_state = 3;
+    }
+    break;
+
+  case 3:
+    if(brightness <= 0 || brightness >= 255) {
+      eye_state = 4;
+    }else{
+      eye_state = 0;
+    }
+    break;
+
+  case 4:
+      fadeAmount = -fadeAmount;
+      eye_state = 0;
+    break;
+
+    break;
+  }
+
+}
+
+ void mouth(){
+   prev_mouth_state = mouth_state;
+   switch (mouth_state)
+   {
+   case 0: // 
+     time_m_0 = millis();
+     count_array++;
+     if(count_array > 13){count_array = 0;}
+     sumup = actual_Array[count_array];		// Set the bit that controls that LED in the array 'sumup';
+     mouth_state = 1;
+     break;
+   case 1:
+       digitalWrite(latchPin, LOW);
+       shiftOut(dataPin, clockPin, MSBFIRST, sumup);
+       digitalWrite(latchPin, HIGH);
+       current_m_time = millis();
+       if(current_m_time - time_m_0 > duration_m){
+       mouth_state = 0;     
+       }
+     break;
+   
+   }
+}
+void shirt(){
+  prev_shirt_state = shirt_state;
+  switch (shirt_state)
+  {
+  case 0: // 
+    time_s_0 = millis();
+    shirt_state = 1;
+    break;
+  
+  case 1:
+      //Serial.println(pog);
+      digitalWrite(latchPin_2, LOW);
+      shiftOut(dataPin_2, clockPin_2, MSBFIRST, turn_on_tled);
+      digitalWrite(latchPin_2, HIGH);
+      current_s_time = millis();
+      if(current_s_time - time_s_0 > duration_s){
+      turn_on_tled = turn_on_tled*128+turn_on_tled/2;     
+      shirt_state = 0;
+      }
+    break;
+  }
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  eyes();
+  mouth();
+  shirt();
+  // For debugging
+  //if(prev_eye_state != eye_state) {Serial.print("EYE State: "); Serial.println(eye_state);}
+  //if(prev_mouth_state != mouth_state) {Serial.print("Mouth State: "); Serial.println(mouth_state);}
+
+}
